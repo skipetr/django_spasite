@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
 from .forms import UserForm
+from .models import MainCycle
 from .serializres import UserSerializer, UserDetailSerializer
 from rest_framework import generics
 
@@ -19,9 +21,18 @@ class UserDetail(generics.RetrieveAPIView):
 def index(request):
     user = User.objects.filter(id=request.user.id)
     if len(user) > 0:
-        return render(request, 'index.html', {'user':user[0]})
+        mainCycle = MainCycle.objects.filter(user=request.user)[0]
+        return render(request, 'index.html', {'user':user[0], 'mainCycle':mainCycle})
     else:
         return render(request, 'login.html')
+
+
+def callClick(request):
+    user = User.objects.filter(id=request.user.id)
+    mainCycle = MainCycle.objects.filter(user=request.user)[0]
+    mainCycle.Click()
+    mainCycle.save()
+    return HttpResponse(mainCycle.coinsCount)
 
 
 def user_login(request):
@@ -48,6 +59,9 @@ def user_registration(request):
         form = UserForm(request.POST)
         if form.is_valid():
             user = form.save()
+            mainCycle = MainCycle()
+            mainCycle.user = user
+            mainCycle.save()
             user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
             login(request, user)
             return redirect('index')
