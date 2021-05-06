@@ -3,15 +3,18 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from .forms import UserForm
+<<<<<<< HEAD
 from .models import MainCycle
 from .serializres import UserSerializer, UserDetailSerializer
+=======
+from .models import MainCycle, Boost
+from .serializers import UserSerializer, UserSerializerDetail, CycleSerializer, CycleSerializerDetail
+>>>>>>> lection2
 from rest_framework import generics
-
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
 
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -29,11 +32,21 @@ def index(request):
 
 def callClick(request):
     user = User.objects.filter(id=request.user.id)
+    serializer_class = UserSerializerDetail
+
+class CycleList(generics.ListAPIView):
+    queryset = MainCycle.objects.all()
+    serializer_class = CycleSerializer
+
+class CycleDetail(generics.RetrieveAPIView):
+    queryset = MainCycle.objects.all()
+    serializer_class = CycleSerializerDetail
+
+def callClick(request):
     mainCycle = MainCycle.objects.filter(user=request.user)[0]
     mainCycle.Click()
     mainCycle.save()
     return HttpResponse(mainCycle.coinsCount)
-
 
 def user_login(request):
     if request.method == "POST":
@@ -70,3 +83,13 @@ def user_registration(request):
     else:
         form = UserForm()
         return render(request, 'registration.html', {'invalid':False, 'form': form})
+
+
+def buyBoost(request):
+    mainCycle = MainCycle.objects.filter(user=request.user)[0]
+    boost = Boost()
+    boost.mainCycle = mainCycle
+    boost.save()
+    boost.Upgrade()
+    mainCycle.save()
+    return HttpResponse(mainCycle.clickPower)

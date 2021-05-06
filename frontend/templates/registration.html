@@ -1,3 +1,5 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -5,9 +7,9 @@
     <title>Title </title>
   </head>
   <body>
+    <header><h3>REGISTRATION</h3></header>
     <main>
     <div align="center">
-			<header><h3>REGISTRATION</h3></header>
       <form method="post" action="{% url 'registration' %}">
         {%csrf_token%}
         {{form.as_p}}
@@ -18,7 +20,7 @@
        {% endif %}
     </div>
     <br>
-    <div align="center">Or you can <a href="/login">sign in</a></div>
+    <div align="center"><a href="/login">sign in</a></div>
   </main>
   </body>
 </html>
