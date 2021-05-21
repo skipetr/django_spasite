@@ -11,6 +11,23 @@
 }
 
 .boost{
-  height: 300px;
-  width: 250px;
+  height: 100px;
+  width: 150px;
+}
+.boost-wrapper{
+  display: flex;
+   flex-direction: row;
+   flex: 1;
+   flex-wrap: wrap
+}
+
+.boost-holder{
+  width: 200px;
+  height: 200px;
+  background: burlywood;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
 }

@@ -9,8 +9,18 @@ class MainCycle(models.Model):
     coinsCount = models.IntegerField(default=0)
     clickPower = models.IntegerField(default=1)
     level = models.IntegerField(default=0)
+
     def Click(self):
         self.coinsCount += self.clickPower
+        return self.check_level()
+
+    def check_level(self):
+        if(self.coinsCount > (self.level**2 + 1) * 1000):
+            self.level += 1
+            boost = Boost(mainCycle = self, level = self.level)
+            boost.save()
+            return True
+        return False
 
 
 class Boost(models.Model):
@@ -25,4 +35,7 @@ class Boost(models.Model):
         self.mainCycle.save()
         self.power *= 2
         self.price *= 2
-        return (self.mainCycle.clickPower, self.mainCycle.coinsCount, self.level, self.price)
+        return (self.mainCycle.clickPower,
+                self.level,
+                self.price,
+                self.power)
